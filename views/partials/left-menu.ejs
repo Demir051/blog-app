@@ -1,0 +1,12 @@
+
+<% if(title == "Blogs") { %>
+    <div class="list-group">
+        <div class="mb-2">Categories :</div>
+        <% categories.forEach(category => {%>
+        <a href="/blogs/category/<%= category.url %>"
+            class="list-group-item list-group-item-action <%= category.url == selectedCategory ?  "active" : "" %>"><%= category.categoryName %></a>
+        <%}); %>
+    </div>
+<% } %>
+
+ 

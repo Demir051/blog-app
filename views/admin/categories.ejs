@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head",title) %>
+</head>
+
+<body>
+
+    <%- include("../partials/navbar") %>
+
+    <div class="container mt-3">
+        <div class="row">
+            <div class="col-md-12 mt-3">
+
+                <% if (actions != "undefined" && actions == "create" ) { %>
+                <div class="alert alert-success">Category Created Successfully</div>
+                <% } %>
+
+                <% if (actions != "undefined" && actions == "notcreate" ) { %>
+                <div class="alert alert-danger">This Category Already Exists</div>
+                <% } %>
+
+                <% if (actions != "undefined" && actions == "delete" ) { %>
+                <div class="alert alert-danger"><b><%= slug %></b> Named Category Has Been Deleted</div>
+                <% } %>
+
+                <% if (actions != "undefined" && actions == "update" ) { %>
+                <div class="alert alert-success"><b><%= slug %></b> Named Category Has Been Updated</div>
+                <% } %>
+                
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">id</th>
+                            <th>category name</th>
+                            <th style="width: 150px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% categories.forEach(category => { %>
+                        <tr>
+                            <td>#<%= category.id %></td>
+                            <td><%= category.categoryName %></td>
+                            <td>
+                                <a class="btn btn-small btn-primary" href="/admin/category/<%= category.url %>">Edit</a>
+                                <a class="btn btn-small btn-danger" href="/admin/category/delete/<%= category.url %>">Delete</a>
+                            </td>
+                        </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

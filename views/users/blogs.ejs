@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <%- include("../partials/head",title) %>
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <%- include("../partials/navbar") %>
+
+    <div class="container mt-3">
+        <div class="row">
+
+            <div class="col-md-3 mb-4">
+                <!-- Left Menu-->
+                <%- include("../partials/left-menu",{categories , selectedCategory,title}) %>
+            </div>
+                <!-- Blog Cards -->
+            <div class="col-md-9">
+                <h3>Blogs</h3>
+                <% if (blogs.length == 0) { %>
+                    <%- include("../partials/no-products")  %>
+                <% } %>
+                <%- include('../partials/blog-card',blogs) %>
+
+                <%- include("../partials/pagination") %>
+            </div>  
+
+        </div>
+    </div>
+
+</body>
+
+</html>

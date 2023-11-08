@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head",title) %>
+</head>
+
+<body>
+
+   <%- include("../partials/navbar") %>
+
+   <div class="container mt-3">
+     <div class="row">
+        <div class="col-md-12 mt-3">
+            
+            <% if (actions != "undefined" && actions == "update" ) { %>
+                <div class="alert alert-success">Blog updated successfully</div>
+            <% } %>
+            <% if (actions != "undefined" && actions == "delete" ) { %>
+            <div class="alert alert-info"><b><%= slug %></b> Named Blog Has Been Deleted</div>
+            <% } %>
+            <% if (actions != "undefined" && actions == "create" ) { %>
+            <div class="alert alert-success">Blog created successfully</div>
+            <% } %>
+
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">id</th>
+                        <th style="width: 150px;">image</th>
+                        <th>title</th>
+                        <th style="width: 200px;">category</th>
+                        <th style="width: 150px;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% blogs.forEach(blog => { %>
+                        <tr>
+                            <td>#<%= blog.id %></td>
+                            <td><img src="/static/images/<%= blog.image %>" class="img-fluid" alt="blogimage" style="width: 150px; height: 100px;"></td>
+                            <td><%= blog.title %></td>
+                            <td>
+                                <% if (Object.keys(blog.categories).length == 0) { %>
+                                        <p>Category Not Found</p>
+                                <% } else {%>                                
+                                <% blog.categories.forEach(category => { %>
+                                    <p><%= category.categoryName %></p>
+                                <%})}%>
+
+                            </td>
+                            <td>
+                                <a class="btn btn-small btn-primary" href="/admin/blog/<%= blog.url %>">Edit</a>
+                                <a class="btn btn-small btn-danger" href="/admin/blog/delete/<%= blog.url %>">Delete</a>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+     </div>
+   </div>
+
+</body>
+
+</html>

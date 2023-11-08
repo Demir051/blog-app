@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <%- include("../partials/head",title) %>
+
+</head>
+
+<body>
+
+    <%- include("../partials/navbar") %>
+
+    <div class="container mt-3">
+        <div class="row">
+            <form method="post" enctype="multipart/form-data">
+                
+            <div class="col-md-12 mt-3">
+                    <input type="hidden" name="image" value="<%= blog.image %>">
+            <div class=" row mb-3">
+                <label for="title" class="col-sm-2 col-form-label">Title</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" name="title" value="<%= blog.title %>">
+                </div>
+            </div>
+            <div class=" row mb-3">
+                <label for="secondtitle" class="col-sm-2 col-form-label">Secon Title</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" name="secondtitle" value="<%= blog.secondTitle %>">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="text" class="col-sm-2 col-form-label">Text</label>
+                <div class="col-sm-8">
+                    <textarea type="text" class="form-control" name="text" rows="10" id="editor"><%= blog.body %></textarea>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="image" class="col-sm-2 col-form-label">İmage</label>
+                <div class="col-sm-8">
+                    <img src="/static/images/<%= blog.image %>" alt="blogimage" style="height: 150px; width: 200px;" class="mb-2">
+                    <input type="file" class="form-control mb-2" name="image">
+                </div>
+            </div>
+            <div class="row">
+                <label for="category" class="col-sm-2 col-form-label">Category</label>
+                <div class="col-sm-10">
+                    <% categories.forEach(category => { %>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="category_<%= category.id  %>" <%= blog.categories.some(cat => cat.id == category.id) ? "checked" : "" %> name ="categories[]" value="<%= category.id %>">
+                        <label class="form-check-label" for="category_<%= category.id  %>">
+                            <%= category.categoryName %>
+                        </label>
+                    </div>
+                    <% }) %>
+                </div>
+            </div>
+            <hr class="col-sm-8 offset-sm-2 mt-2 mb-2">
+            <div class="row mb-3">
+                <div class="col-sm-8 offset-sm-2">
+                    <div class="form-check">
+                        <input type="checkbox" name="homepage" id="homepage" class="form-check-input" <%= blog.homepage ? "checked":""%>>
+                        <label for="homepage" class="form-check-label">Homepage</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-sm-8 offset-sm-2">
+                    <div class="form-check">
+                        <input type="checkbox" name="confirm" id="confirm" class="form-check-input" <%= blog.confirm ? "checked":"" %>>
+                        <label for="confirm" class="form-check-label">Confirm</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3 mt-3">
+                <div class="col-sm-8 offset-sm-2">
+                    <button type="submit" class="btn btn-warning" style="width: 100px;">Edit</button>
+                </div>
+            </div>
+        </div>
+        </form>
+    </div>
+    </div>
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.2/classic/ckeditor.js"></script>
+<script>
+    ClassicEditor
+        .create(document.querySelector('#editor'))
+        .catch(error => {
+            console.error(error);
+        });
+</script>
+
+</body>
+
+</html>
