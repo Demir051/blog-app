@@ -11,6 +11,18 @@ const SessionStore = require('express-session-sequelize')(expressSession.Store);
 // Set up your Express application
 app.set("view engine", "ejs");
 
+// Import routes and models
+const userRoutes = require("./routes/user");
+const adminRoutes = require("./routes/admin");
+const authRoutes = require("./routes/auth");
+const Blog = require("./models/blog");
+const Category = require("./models/category");
+const User = require("./models/user");
+const Role = require("./models/role")
+const {
+    truncate
+} = require("fs");
+
 // Define middlewares
 app.use(express.urlencoded({
     extended: false
@@ -26,15 +38,6 @@ app.use(expressSession({
 }));
 app.use(locals);
 
-// Import routes and models
-const userRoutes = require("./routes/user");
-const adminRoutes = require("./routes/admin");
-const authRoutes = require("./routes/auth");
-const Blog = require("./models/blog");
-const Category = require("./models/category");
-const User = require("./models/user");
-const { truncate } = require("fs");
-
 // Define database relationships
 Blog.belongsToMany(Category, {
     through: "BlogCategories"
@@ -44,6 +47,9 @@ Category.belongsToMany(Blog, {
 });
 Blog.belongsTo(User);
 User.hasMany(Blog);
+
+Role.belongsTo(User , {through : "userRoles"});
+User.belongsToMany(Role , {through: "userRoles"})
 
 // Serve static files and define routes
 app.use("/libs", express.static(path.join(__dirname, "node_modules")));
