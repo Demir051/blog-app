@@ -52,8 +52,9 @@ exports.register_post = async (req, res) => {
             }
         });
 
+        console.log("lengthhh" , match.length);
 
-        if (match.length === 0) {
+        if (match.length == 0) {
 
             const newUser = await User.create({
                 userName: userName,
@@ -68,34 +69,49 @@ exports.register_post = async (req, res) => {
                 text: "Your account has been created successfully"
             });
             
+            req.session.emailMessage = {
+                message: "You have successfully registered!",
+                alert: "success",
+            };
 
             return res.redirect("login");
 
         }
 
         return res.render("auth/register", {
+
             title: "Register",
             message: "User already exist",
             alert: "danger"
+
         })
+
     } catch (err) {
+
         console.log(err);
+
     }
 }
 
 exports.login_get = async (req, res) => {
     
-    const emailMessage = req.session.emailMessage || {message: "Default message",alert: "Default alert"};
-    delete req.session.emailMessage;
+    const emailMessage = req.session.emailMessage || {message: "undefined",alert: "undefined"};
+    // delete req.session.emailMessage;
+    console.log(emailMessage)
     
     try {
         return res.render("auth/login", {
+
             title: "Login",
             message: emailMessage.message ,
             alert: emailMessage.alert 
+
         })
+
     } catch (err) {
+
         console.log(err);
+
     }
 }
 
@@ -109,11 +125,15 @@ exports.login_post = async (req, res) => {
     try {
 
         if (!(email && password)) {
+
             return res.render("auth/login", {
+
                 title: "Login",
                 message: "Please fill all fields",
                 alert: "danger"
+
             })
+
         }
 
         const user = await User.findOne({
@@ -155,23 +175,33 @@ exports.login_post = async (req, res) => {
 }
 
 exports.reset_password_get = async (req, res) => {
+
     const emailMessage = req.session.emailMessage || {message: "Default message",alert: "Default alert"};
     delete req.session.emailMessage;
+
     try {
+
         return res.render("auth/reset-password", {
             title: "Reset Password",
             message: emailMessage.message ,
             alert: emailMessage.alert
         })
+
     } catch (err) {
+
         console.log(err);
+
     }
 }
 
 exports.reset_password_post = async (req, res) => {
+
     const email = req.body.email;
+
     try {
+
         var token = crypto.randomBytes(32).toString('hex');
+
         const user = await User.findOne({
             where: {
                 email: email
@@ -179,8 +209,10 @@ exports.reset_password_post = async (req, res) => {
         });
 
         if (!user) {
+
             req.session.emailMessage = {message : "Email is wrong", alert : "danger"};
             return res.redirect("reset-password");
+
         }
 
         user.resetToken = token;
@@ -192,14 +224,12 @@ exports.reset_password_post = async (req, res) => {
             to: email,
             subject: "Reset Password",
             html: `<p>Click 
-            <a href="http://localhost:3000/account/reset-password/${token}">here</a> 
+            <a href="http://localhost:3000/account/new-password/${token}">here</a> 
             to reset your password</p>`
         });
 
         req.session.emailMessage = {message : "Email sent successfully", alert : "success"};
         res.redirect("login");
-
-
 
     } catch (err) {
         console.log(err);
@@ -211,52 +241,81 @@ exports.new_password_get = async (req, res) => {
     const token = req.params.token;
     
     try {
+
         const user = await User.findOne({
             resetToken: token,
             resetTokenExpiration: {
                 [Op.gt]: Date.now()
             }
         });
+
+        if(!user) {
+            return res.redirect("login");
+        }
+        
         return res.render("auth/new-password", {
-            title: "Reset Password",
+            title: "New Password",
             token: token ,
             userId : user.id
         })
+
     } catch (err) {
+
         console.log(err);
+
     }
 }
 
 exports.new_password_post = async (req, res) => {
+
     const token = req.body.token;
     const userId = req.body.userId;
-    const newPassword = req.body.password;
+    const newPassword1 = req.body.password1;
+    const newPassword2 = req.body.password2;
+    
     try {
-        const user = await User.findOne({
-            resetToken: token,
-            resetTokenExpiration: {
-                [Op.gt]: Date.now()
-            },
-            id: userId
-        });
-        
-        user.password = await bcrypt.hash(newPassword, 10);
-        user.resetToken = null;
-        user.resetTokenExpiration = null;
-        await user.save();
 
-        return res.render("auth/new-password", {
-            title: "Reset Password",
-            token: token
+        if(newPassword1 === newPassword2) {
+            const user = await User.findOne({
+                resetToken: token,
+                resetTokenExpiration: {
+                    [Op.gt]: Date.now()
+                },
+                id: userId
+            });
+
+            user.password = await bcrypt.hash(newPassword1, 10);
+            user.resetToken = null;
+            user.resetTokenExpiration = null;
+            await user.save();
+
+            req.session.message = {
+                message: "Password updated successfully",
+                alert: "success"
+            };
+
+            return res.redirect("login");
+        }
+
+        res.render("auth/new-password" , {
+            title: "New Password",
+            message: "Enter both values the same",
+            alert: "danger"
         })
+
     } catch (err) {
+
         console.log(err);
+
     }
 }
 
 exports.logout_get = async (req, res) => {
+
     try {
+
         if (req.session) {
+
             await new Promise((resolve, reject) => {
                 req.session.destroy(err => {
                     if (err) {
@@ -266,9 +325,14 @@ exports.logout_get = async (req, res) => {
                     }
                 });
             });
+
         }
+
         return res.redirect("/account/login");
+
     } catch (err) {
+
         console.log(err);
+        
     }
 }
