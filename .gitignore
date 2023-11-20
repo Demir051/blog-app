@@ -16,8 +16,8 @@ public/images/*
 #node
 node_modules/
 
-#files
-config.js
+#env
+.env
 
 #IDE
 .vscode/
