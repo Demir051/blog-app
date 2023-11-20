@@ -95,9 +95,8 @@ exports.register_post = async (req, res) => {
 
 exports.login_get = async (req, res) => {
     
-    const emailMessage = req.session.emailMessage || {message: "undefined",alert: "undefined"};
-    // delete req.session.emailMessage;
-    console.log(emailMessage)
+    const emailMessage = req.session.emailMessage ? req.session.emailMessage : "" ;
+    delete req.session.emailMessage;
     
     try {
         return res.render("auth/login", {
@@ -176,7 +175,7 @@ exports.login_post = async (req, res) => {
 
 exports.reset_password_get = async (req, res) => {
 
-    const emailMessage = req.session.emailMessage || {message: "Default message",alert: "Default alert"};
+    const emailMessage = req.session.emailMessage ? req.session.emailMessage : "" ;
     delete req.session.emailMessage;
 
     try {
